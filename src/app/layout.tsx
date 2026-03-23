@@ -1,45 +1,50 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Sora, Space_Mono } from "next/font/google";
 import "./globals.css";
 import { CanvasProvider } from "@/lib/canvas-context";
 import { DemoProvider } from "@/lib/demo-context";
+import { AuthProvider } from "@/lib/auth-context";
+import { getCurrentUser } from "@/lib/insforge/server";
+import { templateConfig } from "@/lib/template-config";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const sora = Sora({
+  variable: "--font-sora",
   subsets: ["latin"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const spaceMono = Space_Mono({
+  variable: "--font-space-mono",
+  weight: ["400", "700"],
   subsets: ["latin"],
 });
 
 export const metadata: Metadata = {
-  title: "Jackson Rental Homes Voice Dashboard",
-  description: "Voice analytics for Jackson Rental Homes connected to Zoho.",
+  title: templateConfig.brand.dashboardTitle,
+  description: templateConfig.brand.description,
   icons: {
-    icon: [
-      { url: "/jackson_favicon.png", type: "image/png" },
-      { url: "/icon.png", type: "image/png" },
-    ],
-    shortcut: "/jackson_favicon.png",
-    apple: "/jackson_favicon.png",
+    icon: [{ url: templateConfig.brand.iconSrc, type: "image/png" }],
+    shortcut: templateConfig.brand.iconSrc,
+    apple: templateConfig.brand.iconSrc,
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const user = await getCurrentUser();
+
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${sora.variable} ${spaceMono.variable} antialiased`}
       >
-        <DemoProvider>
-          <CanvasProvider>{children}</CanvasProvider>
-        </DemoProvider>
+        <AuthProvider initialUser={user}>
+          <DemoProvider>
+            <CanvasProvider>{children}</CanvasProvider>
+          </DemoProvider>
+        </AuthProvider>
       </body>
     </html>
   );

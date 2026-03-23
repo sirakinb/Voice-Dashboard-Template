@@ -11,16 +11,16 @@ export function CanvasChart({ chart }: Props) {
 
   const maxValue = Math.max(...chart.data.map((d) => d.value));
   const colors = [
-    "#0D6B5E", // jackson-green
-    "#0F8571", // jackson-green-light
-    "#095248", // jackson-green-dark
-    "#1A3A4A", // jackson-charcoal
-    "#2D4A5A", // jackson-charcoal-light
-    "#0D6B5E80", // jackson-green with opacity
+    "#b387ff",
+    "#d8b4fe",
+    "#8b5cf6",
+    "#6366f1",
+    "#ec4899",
+    "#b387ff88",
   ];
 
   return (
-    <div className="rounded-2xl border border-jackson-cream-dark bg-jackson-white p-6 shadow-sm">
+    <div className="glass-card rounded-2xl p-6">
       {/* Header */}
       <div className="mb-4 flex items-start justify-between">
         <div>
@@ -31,7 +31,7 @@ export function CanvasChart({ chart }: Props) {
         </div>
         <button
           onClick={() => removeItem(chart.id)}
-          className="rounded-lg p-1.5 text-jackson-text-muted transition hover:bg-jackson-cream hover:text-jackson-charcoal"
+          className="rounded-lg p-1.5 text-jackson-text-muted transition hover:bg-jackson-white/10 hover:text-jackson-charcoal"
         >
           <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -48,7 +48,7 @@ export function CanvasChart({ chart }: Props) {
                 <span className="text-jackson-charcoal">{item.label}</span>
                 <span className="font-medium text-jackson-charcoal">{item.value}</span>
               </div>
-              <div className="h-6 overflow-hidden rounded-full bg-jackson-cream">
+              <div className="h-6 overflow-hidden rounded-full bg-jackson-white/10">
                 <div
                   className="h-full rounded-full transition-all duration-500"
                   style={{
@@ -118,7 +118,7 @@ export function CanvasChart({ chart }: Props) {
                 y1={30 + i * 25}
                 x2="390"
                 y2={30 + i * 25}
-                  stroke="#1A3A4A"
+                  stroke="rgb(255 255 255 / 0.16)"
                 strokeWidth="1"
               />
             ))}
@@ -151,7 +151,7 @@ export function CanvasChart({ chart }: Props) {
                   return `${index === 0 ? "M" : "L"} ${x} ${y}`;
                 }).join(" ")}
                 fill="none"
-                stroke="#0D6B5E"
+                stroke="#b387ff"
                 strokeWidth="2"
               />
             )}
@@ -163,7 +163,7 @@ export function CanvasChart({ chart }: Props) {
               const y = maxValue > 0 ? 130 - (item.value / maxValue) * 100 : 130;
               return (
                 <g key={item.label}>
-                  <circle cx={x} cy={y} r="4" fill="#0D6B5E" />
+                  <circle cx={x} cy={y} r="4" fill="#b387ff" />
                   <text
                     x={x}
                     y="145"
@@ -179,8 +179,8 @@ export function CanvasChart({ chart }: Props) {
             {/* Gradient definition */}
             <defs>
               <linearGradient id="areaGradient" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#0D6B5E" stopOpacity="0.3" />
-                <stop offset="100%" stopColor="#0D6B5E" stopOpacity="0.05" />
+                <stop offset="0%" stopColor="#b387ff" stopOpacity="0.35" />
+                <stop offset="100%" stopColor="#b387ff" stopOpacity="0.05" />
               </linearGradient>
             </defs>
           </svg>
@@ -189,4 +189,3 @@ export function CanvasChart({ chart }: Props) {
     </div>
   );
 }
-

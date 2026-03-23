@@ -1,6 +1,6 @@
 {
-  "name": "Jackson Rental Homes Voice Dashboard",
-  "short_name": "Jackson Dashboard",
+  "name": "Analytics Dashboard for Voice AI",
+  "short_name": "Voice AI",
   "icons": [
     {
       "src": "/favicon.png",

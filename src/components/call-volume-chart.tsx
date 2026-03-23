@@ -32,7 +32,7 @@ function formatTimeLabel(label: string): string {
 export function CallVolumeChart({ data, className }: CallVolumeChartProps) {
   if (data.length === 0) {
     return (
-      <div className="flex h-56 items-center justify-center rounded-xl border border-dashed border-jackson-green/20 bg-jackson-cream text-sm text-jackson-text-muted">
+      <div className="glass-panel flex h-56 items-center justify-center rounded-xl border border-dashed border-jackson-green/20 text-sm text-jackson-text-muted">
         No call activity for this timeframe yet.
       </div>
     );
@@ -106,7 +106,7 @@ export function CallVolumeChart({ data, className }: CallVolumeChartProps) {
           <span
             aria-hidden
             className="h-2.5 w-2.5 rounded-full"
-            style={{ backgroundColor: "#0D6B5E" }}
+            style={{ backgroundColor: "#b387ff" }}
           />
           Total Calls
         </span>
@@ -114,7 +114,7 @@ export function CallVolumeChart({ data, className }: CallVolumeChartProps) {
           <span
             aria-hidden
             className="h-2.5 w-2.5 rounded-full"
-            style={{ backgroundColor: "#0F8571" }}
+            style={{ backgroundColor: "#7c3aed" }}
           />
           Resolved by AI
         </span>
@@ -133,8 +133,8 @@ export function CallVolumeChart({ data, className }: CallVolumeChartProps) {
             y1="0"
             y2="1"
           >
-            <stop offset="0%" stopColor="#0D6B5E" stopOpacity="0.4" />
-            <stop offset="100%" stopColor="#1A3A4A" stopOpacity="0.1" />
+            <stop offset="0%" stopColor="#b387ff" stopOpacity="0.42" />
+            <stop offset="100%" stopColor="#31204f" stopOpacity="0.08" />
           </linearGradient>
         </defs>
 
@@ -146,7 +146,7 @@ export function CallVolumeChart({ data, className }: CallVolumeChartProps) {
             x2={totalWidth - padding.right}
             y1={getY(tick)}
             y2={getY(tick)}
-            stroke="#1A3A4A"
+            stroke="rgb(255 255 255 / 0.14)"
             strokeWidth={1}
             strokeDasharray={tick === 0 ? "0" : "4,4"}
           />
@@ -160,7 +160,7 @@ export function CallVolumeChart({ data, className }: CallVolumeChartProps) {
             y={getY(tick)}
             textAnchor="end"
             dominantBaseline="middle"
-            fill="#6B7280"
+            fill="#b7a5da"
             fontSize="12"
             fontWeight="500"
           >
@@ -174,7 +174,7 @@ export function CallVolumeChart({ data, className }: CallVolumeChartProps) {
           y={totalHeight / 2}
           textAnchor="middle"
           dominantBaseline="middle"
-          fill="#6B7280"
+          fill="#b7a5da"
           fontSize="11"
           fontWeight="500"
           transform={`rotate(-90, 16, ${totalHeight / 2})`}
@@ -195,7 +195,7 @@ export function CallVolumeChart({ data, className }: CallVolumeChartProps) {
         <polyline
           points={buildLine("totalCalls")}
           fill="none"
-          stroke="#0D6B5E"
+          stroke="#b387ff"
           strokeWidth={2.5}
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -205,7 +205,7 @@ export function CallVolumeChart({ data, className }: CallVolumeChartProps) {
         <polyline
           points={linePoints}
           fill="none"
-          stroke="#0F8571"
+          stroke="#7c3aed"
           strokeWidth={2.5}
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -227,7 +227,7 @@ export function CallVolumeChart({ data, className }: CallVolumeChartProps) {
                   x2={x}
                   y1={padding.top}
                   y2={padding.top + chartHeight}
-                  stroke="#1A3A4A"
+                  stroke="rgb(255 255 255 / 0.1)"
                   strokeWidth={1}
                 />
               )}
@@ -236,7 +236,7 @@ export function CallVolumeChart({ data, className }: CallVolumeChartProps) {
                 cx={x}
                 cy={totalY}
                 r={4}
-                fill="#0D6B5E"
+                fill="#b387ff"
                 stroke="#FFFFFF"
                 strokeWidth={2}
               />
@@ -245,7 +245,7 @@ export function CallVolumeChart({ data, className }: CallVolumeChartProps) {
                 cx={x}
                 cy={aiY}
                 r={4}
-                fill="#0F8571"
+                fill="#7c3aed"
                 stroke="#FFFFFF"
                 strokeWidth={2}
               />

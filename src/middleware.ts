@@ -1,80 +1,33 @@
-import { createServerClient, type CookieOptions } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
+import {
+  INSFORGE_ACCESS_COOKIE,
+  INSFORGE_REFRESH_COOKIE,
+  protectedRoutes,
+} from "@/lib/insforge/constants";
 
 export async function middleware(request: NextRequest) {
-  let response = NextResponse.next({
-    request: {
-      headers: request.headers,
-    },
-  });
-
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        get(name: string) {
-          return request.cookies.get(name)?.value;
-        },
-        set(name: string, value: string, options: CookieOptions) {
-          request.cookies.set({
-            name,
-            value,
-            ...options,
-          });
-          response = NextResponse.next({
-            request: {
-              headers: request.headers,
-            },
-          });
-          response.cookies.set({
-            name,
-            value,
-            ...options,
-          });
-        },
-        remove(name: string, options: CookieOptions) {
-          request.cookies.set({
-            name,
-            value: "",
-            ...options,
-          });
-          response = NextResponse.next({
-            request: {
-              headers: request.headers,
-            },
-          });
-          response.cookies.set({
-            name,
-            value: "",
-            ...options,
-          });
-        },
-      },
-    }
+  const hasAccessToken = Boolean(request.cookies.get(INSFORGE_ACCESS_COOKIE)?.value);
+  const hasRefreshToken = Boolean(
+    request.cookies.get(INSFORGE_REFRESH_COOKIE)?.value
   );
-
-  const { data: { session } } = await supabase.auth.getSession();
-
-  // Protected routes - redirect to login if not authenticated
-  const protectedRoutes = ["/", "/reports", "/canvas"];
+  const hasSessionCookie = hasAccessToken || hasRefreshToken;
   const isProtectedRoute = protectedRoutes.some(
-    (route) => request.nextUrl.pathname === route || 
-               request.nextUrl.pathname.startsWith(route + "/")
+    (route) =>
+      request.nextUrl.pathname === route ||
+      request.nextUrl.pathname.startsWith(route + "/")
   );
 
-  if (isProtectedRoute && !session) {
+  if (isProtectedRoute && !hasSessionCookie) {
     const redirectUrl = new URL("/login", request.url);
     redirectUrl.searchParams.set("next", request.nextUrl.pathname);
     return NextResponse.redirect(redirectUrl);
   }
 
-  // Redirect logged-in users away from login page
-  if (request.nextUrl.pathname === "/login" && session) {
+  if (request.nextUrl.pathname === "/login" && hasSessionCookie) {
     return NextResponse.redirect(new URL("/", request.url));
   }
 
-  return response;
+  return NextResponse.next();
 }
 
 export const config = {
@@ -90,4 +43,3 @@ export const config = {
     "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$|api).*)",
   ],
 };
-

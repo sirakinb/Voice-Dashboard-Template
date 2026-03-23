@@ -5,52 +5,41 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { DataChat } from "./data-chat";
-import { signOut } from "@/lib/supabase/auth";
-import { supabaseBrowserClient } from "@/lib/supabase/client";
-import type { User } from "@supabase/supabase-js";
 import { useDemoMode } from "@/lib/demo-context";
+import { useAuthState } from "@/lib/auth-context";
+import { signOutAction } from "@/lib/insforge/actions";
+import { templateConfig } from "@/lib/template-config";
 
-const navItems = [
-  { label: "Dashboard", href: "/" },
-  { label: "Performance Report", href: "/reports" },
-  { label: "Data Canvas", href: "/canvas" },
-];
+const navItems = templateConfig.navigation;
+
+function getDisplayName(
+  user: ReturnType<typeof useAuthState>["user"]
+): string {
+  const profileName =
+    typeof user?.profile?.name === "string" ? user.profile.name.trim() : "";
+  const metadataName =
+    typeof user?.metadata?.name === "string" ? user.metadata.name.trim() : "";
+  const emailName = user?.email?.split("@")[0]?.trim() ?? "";
+
+  return profileName || metadataName || emailName || "User";
+}
 
 export function Sidebar() {
   const pathname = usePathname();
   const menuRef = useRef<HTMLDivElement | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
-  const [user, setUser] = useState<User | null>(null);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const { isDemoMode, toggleDemoMode } = useDemoMode();
-
-  // Fetch user on mount
-  useEffect(() => {
-    const supabase = supabaseBrowserClient();
-
-    // Get initial user
-    supabase.auth.getUser().then(({ data: { user } }) => {
-      setUser(user);
-    });
-
-    // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null);
-    });
-
-    return () => subscription.unsubscribe();
-  }, []);
+  const { user, setUser } = useAuthState();
 
   const handleLogout = async () => {
     setIsLoggingOut(true);
     setMenuOpen(false);
-    await signOut();
+    setUser(null);
+    await signOutAction();
   };
 
-  // Get display name from user metadata or email
-  const displayName = user?.user_metadata?.full_name ||
-    user?.email?.split("@")[0] ||
-    "User";
+  const displayName = getDisplayName(user);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -74,12 +63,11 @@ export function Sidebar() {
   }, []);
 
   return (
-    <aside className="hidden h-full w-72 flex-col overflow-y-auto border-r border-jackson-cream-dark bg-jackson-white lg:flex">
-      {/* Jackson Logo at Top */}
-      <div className="flex items-center px-6 py-6">
+    <aside className="glass-sidebar hidden h-full w-80 flex-col overflow-y-auto lg:flex">
+      <div className="flex items-center px-7 py-7">
         <Image
-          src="/jackson_logo.png"
-          alt="Jackson Rental Homes"
+          src={templateConfig.brand.logoSrc}
+          alt={templateConfig.brand.companyName}
           width={180}
           height={60}
           className="h-14 w-auto object-contain"
@@ -87,19 +75,19 @@ export function Sidebar() {
         />
       </div>
 
-      {/* Navigation */}
-      <nav className="flex-1 px-4 pb-32">
-        <div className="space-y-1">
+      <nav className="flex-1 px-5 pb-32">
+        <div className="space-y-1.5">
           {navItems.map((item) => {
             const isActive = pathname === item.href;
             return (
               <Link
                 key={item.label}
                 href={item.href}
-                className={`flex w-full items-center gap-3 rounded-xl px-5 py-3 text-left text-sm font-medium transition ${isActive
-                  ? "bg-jackson-green text-white shadow-sm"
-                  : "text-jackson-charcoal hover:bg-jackson-cream-dark"
-                  }`}
+                className={`flex w-full items-center gap-3 rounded-2xl px-5 py-3.5 text-left text-sm font-medium transition ${
+                  isActive
+                    ? "glass-chip text-white shadow-lg"
+                    : "text-jackson-charcoal hover:bg-jackson-white/10"
+                }`}
               >
                 {item.label}
               </Link>
@@ -108,22 +96,18 @@ export function Sidebar() {
         </div>
       </nav>
 
-      {/* Bottom Section */}
       <div className="px-4 pb-6">
         <div className="space-y-3">
-          {/* AI Data Chat */}
           <DataChat />
 
-          {/* User Profile */}
           <div ref={menuRef} className="relative">
             <button
               type="button"
               onClick={() => setMenuOpen((prev) => !prev)}
-              className="flex w-full items-center gap-3 rounded-xl border border-jackson-cream-dark bg-jackson-white px-4 py-3 text-left transition hover:border-jackson-green/30 hover:shadow-md"
+              className="glass-panel flex w-full items-center gap-3 rounded-xl px-4 py-3 text-left transition hover:border-jackson-green/30"
               aria-haspopup="menu"
               aria-expanded={menuOpen}
             >
-              {/* User Icon */}
               <div className="flex h-10 w-10 items-center justify-center rounded-full bg-jackson-green text-white">
                 <svg
                   className="h-5 w-5"
@@ -147,17 +131,16 @@ export function Sidebar() {
                 </svg>
               </div>
 
-              {/* User Name */}
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-semibold text-jackson-charcoal truncate capitalize">
+                <p className="truncate text-sm font-semibold text-jackson-charcoal capitalize">
                   {displayName}
                 </p>
               </div>
 
-              {/* Chevron */}
               <svg
-                className={`h-4 w-4 flex-shrink-0 text-jackson-text-muted transform transition ${menuOpen ? "rotate-180" : ""
-                  }`}
+                className={`h-4 w-4 flex-shrink-0 transform text-jackson-text-muted transition ${
+                  menuOpen ? "rotate-180" : ""
+                }`}
                 viewBox="0 0 20 20"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
@@ -173,10 +156,8 @@ export function Sidebar() {
               </svg>
             </button>
 
-            {/* Dropdown Menu */}
             {menuOpen && (
-              <div className="absolute bottom-[calc(100%+8px)] left-0 right-0 z-10 min-w-[260px] rounded-2xl border border-jackson-cream-dark bg-jackson-white py-2 text-jackson-charcoal shadow-2xl">
-                {/* Account Header */}
+              <div className="glass-card absolute bottom-[calc(100%+8px)] left-0 right-0 z-10 min-w-[260px] rounded-2xl py-2 text-jackson-charcoal shadow-2xl">
                 <div className="px-4 py-3">
                   <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-wide text-jackson-text-muted">
                     <svg
@@ -202,18 +183,17 @@ export function Sidebar() {
                     Account
                   </div>
                   <p className="mt-2 break-all text-sm font-medium text-jackson-charcoal">
-                    {user?.email || "Not signed in"}
+                    {user?.email || "No active session"}
                   </p>
                 </div>
 
-                <div className="my-2 h-px bg-jackson-cream-dark" />
+                <div className="glass-divider my-2" />
 
-                {/* Demo Mode Toggle */}
                 <div className="px-2 pb-1">
                   <button
                     type="button"
                     onClick={toggleDemoMode}
-                    className="flex w-full items-center justify-between gap-3 rounded-lg px-3 py-2 text-left text-sm font-medium text-jackson-charcoal transition hover:bg-jackson-cream"
+                    className="flex w-full items-center justify-between gap-3 rounded-lg px-3 py-2 text-left text-sm font-medium text-jackson-charcoal transition hover:bg-jackson-white/10"
                   >
                     <div className="flex items-center gap-3">
                       <svg
@@ -232,26 +212,27 @@ export function Sidebar() {
                       <span>Demo Mode</span>
                     </div>
                     <div
-                      className={`h-5 w-9 rounded-full transition ${isDemoMode ? "bg-jackson-green" : "bg-jackson-cream-dark"
-                        }`}
+                      className={`h-5 w-9 rounded-full transition ${
+                        isDemoMode ? "bg-jackson-green" : "bg-jackson-cream-dark"
+                      }`}
                     >
                       <div
-                        className={`h-4 w-4 translate-y-0.5 rounded-full bg-white transition-transform ${isDemoMode ? "translate-x-4" : "translate-x-0.5"
-                          }`}
+                        className={`h-4 w-4 translate-y-0.5 rounded-full bg-white transition-transform ${
+                          isDemoMode ? "translate-x-4" : "translate-x-0.5"
+                        }`}
                       />
                     </div>
                   </button>
                 </div>
 
-                <div className="my-2 h-px bg-jackson-cream-dark" />
+                <div className="glass-divider my-2" />
 
-                {/* Log out Button */}
                 <div className="px-2 pb-1">
                   <button
                     type="button"
                     onClick={handleLogout}
                     disabled={isLoggingOut}
-                    className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left text-sm font-medium text-jackson-charcoal transition hover:bg-jackson-cream disabled:opacity-50"
+                    className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left text-sm font-medium text-jackson-charcoal transition hover:bg-jackson-white/10 disabled:opacity-50"
                   >
                     {isLoggingOut ? (
                       <svg
@@ -303,7 +284,9 @@ export function Sidebar() {
                         />
                       </svg>
                     )}
-                    <span className="text-jackson-charcoal">{isLoggingOut ? "Signing out..." : "Log out"}</span>
+                    <span className="text-jackson-charcoal">
+                      {isLoggingOut ? "Signing out..." : "Log out"}
+                    </span>
                   </button>
                 </div>
               </div>

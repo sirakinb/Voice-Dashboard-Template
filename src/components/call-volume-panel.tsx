@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { CallVolumeChart } from "@/components/call-volume-chart";
 import type { CallVolumeDatum } from "@/lib/mockData";
+import { templateConfig } from "@/lib/template-config";
 
 type Timeframe = "Hourly" | "Daily" | "Weekly" | "Monthly";
 
@@ -39,15 +40,15 @@ export function CallVolumePanel({
             Call Volume Over Time
           </h2>
           <p className="text-sm text-jackson-text-muted">
-            Track how frequently calls are coming into Jackson Rental Homes.
+            {templateConfig.dashboard.volumeSubtitle}
           </p>
         </div>
-        <div className="flex items-center gap-1 rounded-full bg-jackson-cream-dark p-1 text-sm font-medium text-jackson-text-muted">
+        <div className="glass-panel flex items-center gap-1 rounded-full p-1 text-sm font-medium text-jackson-text-muted">
           {(["Hourly", "Daily", "Weekly", "Monthly"] as const).map((item) => (
             <button
               key={item}
               className={`rounded-full px-3 py-1.5 transition-all ${item === timeframe
-                  ? "bg-jackson-charcoal text-white shadow-sm"
+                  ? "bg-jackson-green/80 text-white shadow-lg"
                   : "hover:text-jackson-charcoal"
                 }`}
               type="button"

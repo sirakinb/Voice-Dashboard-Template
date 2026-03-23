@@ -1,5 +1,5 @@
 {
-  "name": "voice_dashboard_1013",
+  "name": "voice-dashboard-template",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -10,8 +10,7 @@
   },
   "dependencies": {
     "@google/genai": "^1.30.0",
-    "@supabase/ssr": "^0.7.0",
-    "@supabase/supabase-js": "^2.75.0",
+    "@insforge/sdk": "^1.2.0",
     "next": "15.5.9",
     "react": "19.1.0",
     "react-dom": "19.1.0"

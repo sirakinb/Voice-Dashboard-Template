@@ -5,27 +5,28 @@ import { useCanvas } from "@/lib/canvas-context";
 import { CanvasChart } from "@/components/canvas-chart";
 import { CanvasDraftCard } from "@/components/canvas-draft-card";
 import { Sidebar } from "@/components/sidebar";
+import { templateConfig } from "@/lib/template-config";
 
 export default function CanvasPage() {
   const { items, clearCanvas } = useCanvas();
 
   return (
-    <div className="h-screen overflow-hidden bg-jackson-cream text-jackson-charcoal">
+    <div className="app-shell h-screen overflow-hidden bg-jackson-cream text-jackson-charcoal">
       <div className="flex h-full">
         <Sidebar />
         <div className="flex flex-1 flex-col overflow-hidden">
           <div className="lg:hidden">
-            <div className="flex items-center justify-between border-b border-jackson-cream-dark bg-jackson-white px-5 py-4">
+            <div className="glass-panel mx-4 mt-4 flex items-center justify-between rounded-2xl px-5 py-4">
               <Image
-                src="/jackson_logo.png"
-                alt="Jackson Rental Homes"
+                src={templateConfig.brand.logoSrc}
+                alt={templateConfig.brand.companyName}
                 width={120}
                 height={40}
                 className="h-8 w-auto"
               />
-              <div className="flex items-center gap-2 rounded-full bg-jackson-green/10 px-4 py-2 text-xs font-medium text-jackson-green">
+              <div className="glass-chip flex items-center gap-2 rounded-full px-4 py-2 text-xs font-medium text-jackson-green">
                 <span className="h-2 w-2 rounded-full bg-jackson-green" aria-hidden />
-                Connected to Zoho CRM
+                {templateConfig.integrations.primaryLabel}
               </div>
             </div>
           </div>
@@ -35,17 +36,17 @@ export default function CanvasPage() {
               {/* Header */}
               <div className="flex items-center justify-between">
                 <div>
-          <h1 className="text-2xl font-semibold text-jackson-charcoal">
-            Data Canvas
-          </h1>
-          <p className="mt-1 text-sm text-jackson-text-muted">
-                    Visualizations and drafts generated from your chat queries
+                  <h1 className="text-2xl font-semibold text-jackson-charcoal">
+                    {templateConfig.canvas.title}
+                  </h1>
+                  <p className="mt-1 text-sm text-jackson-text-muted">
+                    {templateConfig.canvas.subtitle}
                   </p>
                 </div>
                 {items.length > 0 && (
                   <button
                     onClick={clearCanvas}
-                    className="rounded-lg border border-jackson-cream-dark px-4 py-2 text-sm font-medium text-jackson-text-muted transition hover:bg-jackson-cream hover:text-jackson-charcoal"
+                    className="glass-button-secondary rounded-lg px-4 py-2 text-sm font-medium text-jackson-text-muted transition hover:text-jackson-charcoal"
                   >
                     Clear Canvas
                   </button>
@@ -54,8 +55,8 @@ export default function CanvasPage() {
 
               {/* Canvas Content */}
               {items.length === 0 ? (
-                <div className="flex min-h-[60vh] flex-col items-center justify-center rounded-2xl border-2 border-dashed border-jackson-cream-dark bg-jackson-white/50 p-12">
-                  <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-2xl bg-jackson-cream">
+                <div className="glass-card flex min-h-[60vh] flex-col items-center justify-center rounded-2xl border border-dashed p-12">
+                  <div className="glass-panel mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-2xl">
                     <svg
                       className="h-10 w-10 text-jackson-green"
                       fill="none"
@@ -71,21 +72,16 @@ export default function CanvasPage() {
                     </svg>
                   </div>
                   <h3 className="mb-2 text-lg font-semibold text-jackson-charcoal">
-                    Your canvas is empty
+                    {templateConfig.canvas.emptyStateTitle}
                   </h3>
                   <p className="mb-6 max-w-md text-center text-sm text-jackson-text-muted">
-                    Use the chat to generate visualizations and drafts. Try commands like:
+                    {templateConfig.canvas.emptyStateDescription}
                   </p>
                   <div className="flex flex-wrap justify-center gap-2">
-                    {[
-                      "Show me a chart of calls by day",
-                      "Draft a weekly summary",
-                      "Visualize call categories",
-                      "Create a report on after-hours calls",
-                    ].map((example) => (
+                    {templateConfig.canvas.emptyStateExamples.map((example) => (
                       <span
                         key={example}
-                        className="rounded-full bg-jackson-cream px-3 py-1.5 text-xs text-jackson-charcoal"
+                        className="glass-chip rounded-full px-3 py-1.5 text-xs text-jackson-charcoal"
                       >
                         &quot;{example}&quot;
                       </span>
@@ -110,4 +106,3 @@ export default function CanvasPage() {
     </div>
   );
 }
-

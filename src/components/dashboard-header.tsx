@@ -18,7 +18,7 @@ export function DashboardHeader({
         ) : null}
       </div>
       {connectionLabel ? (
-        <div className="flex items-center gap-2 rounded-full bg-jackson-green/10 px-4 py-2 text-sm font-medium text-jackson-green">
+        <div className="glass-chip flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium text-jackson-green">
           <span className="h-2 w-2 rounded-full bg-jackson-green" aria-hidden />
           {connectionLabel}
         </div>

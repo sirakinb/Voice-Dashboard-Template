@@ -6,6 +6,7 @@ import { StatCard } from "@/components/stat-card";
 import { useDemoMode } from "@/lib/demo-context";
 import { demoCallVolumeData } from "@/lib/demo-data";
 import type { CallVolumeDatum, StatCard as StatCardType } from "@/lib/mockData";
+import { templateConfig } from "@/lib/template-config";
 
 type Props = {
     statCards: StatCardType[];
@@ -43,18 +44,18 @@ export function DashboardContent({
     const displayHourlyVolume = isDemoMode ? [] : hourlyCallVolume;
 
     const showDemoWarning = isDemoMode;
-    const showSupabaseWarning = !isDemoMode && !isLive;
+    const showLiveDataWarning = !isDemoMode && !isLive;
 
     return (
         <main className="flex-1 space-y-6 overflow-y-auto px-5 py-6 lg:px-10">
             <DashboardHeader
-                title="Jackson Rental Homes Voice Dashboard"
-                subtitle="Monitor leasing calls and resident support handled by the AI receptionist."
-                connectionLabel="Connected to Zoho CRM"
+                title={templateConfig.dashboard.title}
+                subtitle={templateConfig.dashboard.subtitle}
+                connectionLabel={templateConfig.integrations.primaryLabel}
             />
 
             {showDemoWarning && (
-                <div className="rounded-xl border border-jackson-green/30 bg-jackson-green/10 px-4 py-3 text-sm text-jackson-green">
+                <div className="glass-chip rounded-xl px-4 py-3 text-sm text-jackson-green">
                     <div className="flex items-center gap-2">
                         <svg
                             className="h-4 w-4 flex-shrink-0"
@@ -77,13 +78,9 @@ export function DashboardContent({
                 </div>
             )}
 
-            {showSupabaseWarning && (
-                <div className="rounded-xl border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-sm text-amber-200">
-                    Showing sample data. Add your Supabase credentials in{" "}
-                    <code className="mx-1 rounded bg-jackson-charcoal/10 px-1 py-0.5 font-mono text-xs">
-                        .env.local
-                    </code>{" "}
-                    to load live call analytics.
+            {showLiveDataWarning && (
+                <div className="glass-panel rounded-xl border border-amber-400/25 px-4 py-3 text-sm text-amber-100">
+                    {templateConfig.dashboard.fallbackNotice}
                 </div>
             )}
 
@@ -93,7 +90,7 @@ export function DashboardContent({
                 ))}
             </section>
 
-            <section className="rounded-2xl border border-jackson-cream-dark bg-jackson-white p-6 shadow-sm">
+            <section className="glass-card rounded-2xl p-6">
                 <CallVolumePanel
                     dailyData={displayDailyVolume}
                     hourlyData={displayHourlyVolume}

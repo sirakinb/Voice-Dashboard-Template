@@ -4,7 +4,7 @@ export function StatCard({ label, value, change }: StatCardData) {
   const isPositive = change >= 0;
 
   return (
-    <article className="rounded-2xl border border-jackson-cream-dark bg-jackson-white p-5 shadow-sm">
+    <article className="glass-card rounded-2xl p-5">
       <div className="flex items-center justify-between">
         <p className="text-sm font-medium text-jackson-green">{label}</p>
       </div>
