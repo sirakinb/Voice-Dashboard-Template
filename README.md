@@ -212,6 +212,137 @@ For each new adopter:
 9. Confirm rows appear in `call_events`.
 10. Open the dashboard and verify the charts/reports populate.
 
+## Prompts You Can Give Codex
+
+Adopters do not need to know the schema names, RLS details, or the exact backend steps ahead of time.
+
+They can simply ask for the outcome they want. The agent should inspect this repo, use [insforge/schema.sql](insforge/schema.sql), and determine the required backend and frontend changes.
+
+### Prompt: Connect this app to my InsForge project
+
+```text
+Connect this Voice-Dashboard-Template repo to my InsForge project. Set up auth, import the required schema, verify the dashboard can run locally, and tell me what env vars I still need to fill in.
+```
+
+What the agent should infer:
+
+- link the repo to the correct InsForge project
+- import `insforge/schema.sql`
+- verify auth config and local env vars
+- run the app locally and confirm the routes load
+
+### Prompt: Create the webhook ingest function
+
+```text
+I want post-call data from my voice platform to populate this dashboard. Create an InsForge edge function that accepts the provider webhook, validates it, maps the payload into the dashboard schema, and writes rows into the database so the app fills with real data.
+```
+
+What the agent should infer:
+
+- inspect `public.call_events` in `insforge/schema.sql`
+- determine the required payload mapping
+- create an InsForge edge function
+- normalize provider fields into the existing call schema
+- insert or upsert rows into `public.call_events`
+- explain how to configure the provider webhook URL and secret
+
+### Prompt: Adapt this for my provider
+
+```text
+I use <provider-name>. Update this template so the webhook payload from that provider maps correctly into the dashboard database and the app shows the right metrics.
+```
+
+What the agent should infer:
+
+- inspect the provider payload format
+- adjust the edge function mapping
+- extend the schema only if needed
+- keep the app querying from the same dashboard/report objects where possible
+
+### Prompt: Rebrand the dashboard
+
+```text
+Rebrand this dashboard for my company. Change the logo, favicon, product name, colors, app copy, and login screen so it matches my brand.
+```
+
+What the agent should infer:
+
+- update `src/lib/template-config.ts`
+- update `public/` assets
+- update `src/app/globals.css`
+- preserve the working backend/auth flows
+
+### Prompt: Add fields to the data model
+
+```text
+I need this dashboard to track additional call fields: <list the fields>. Update the database schema, ingestion path, and UI so those fields are stored and used correctly.
+```
+
+What the agent should infer:
+
+- modify `insforge/schema.sql`
+- update the ingest edge function
+- update any report/dashboard code that should display or aggregate the new fields
+
+### Prompt: Make this multi-tenant
+
+```text
+Convert this template from a single-user data model to a multi-tenant workspace model. I want multiple users in one organization to see the same dashboard data.
+```
+
+What the agent should infer:
+
+- replace the current user-scoped model with `workspace_id` or `organization_id`
+- update RLS policies
+- update views and report functions
+- update ingestion so calls are assigned to the correct tenant
+
+### Prompt: Deploy the full stack
+
+```text
+Deploy this app and any required InsForge backend pieces for production. Make sure auth works, the app has the right env vars, and the webhook ingestion path is ready.
+```
+
+What the agent should infer:
+
+- confirm production env vars
+- deploy the frontend
+- deploy any edge functions
+- verify auth and database connectivity
+- verify the webhook path end to end
+
+### Prompt: Audit what is still missing
+
+```text
+Review this repo and tell me exactly what is still missing before a customer can use it with their own InsForge account and voice provider.
+```
+
+What the agent should infer:
+
+- check auth
+- check schema
+- check ingestion
+- check deployment readiness
+- identify any missing secrets, functions, multi-tenant changes, or provider mappings
+
+### Best Way For Adopters To Ask
+
+Good prompts focus on the business outcome, for example:
+
+- "Connect this app to my InsForge project."
+- "Make Retell post-call webhooks populate the dashboard."
+- "Turn this into a multi-tenant dashboard."
+- "Rebrand this for my company."
+
+The adopter does not need to say:
+
+- which SQL objects to create
+- which views or RPCs are required
+- which files to edit
+- how the data assistant is wired
+
+The agent should inspect the repo and infer those implementation details.
+
 ## Customization Points
 
 Most adopters will edit:
