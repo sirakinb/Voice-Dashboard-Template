@@ -173,6 +173,23 @@ Recommended flow:
 
 After that, the dashboard updates automatically because the app already reads from the database.
 
+### Included In This Repo Now
+
+This repo now includes a generic scaffold at:
+
+- `insforge/functions/call-webhook/index.ts`
+- `insforge/functions/call-webhook/README.md`
+- `insforge/functions/call-webhook/sample.normalized.json`
+
+It is designed to:
+
+- validate a shared webhook secret
+- accept a normalized call payload
+- use the reserved InsForge `API_KEY` secret for backend inserts
+- insert or update rows in `public.call_events`
+
+Out of the box, it works with the normalized payload shape documented in the function folder. Most adopters will then customize the normalization layer for their provider.
+
 ### Important Current Constraint
 
 The current schema is user-scoped:
@@ -187,15 +204,15 @@ That means the simplest adopter setup is:
 
 If your adopters need a shared multi-user workspace, you should evolve the schema to use something like `workspace_id` or `organization_id` and then update the RLS policies, views, and report functions accordingly.
 
-### What This Repo Does Not Yet Ship
+### What This Repo Still Does Not Ship
 
-This repository does not currently include a provider-specific ingest edge function because:
+This repository now includes a generic ingest scaffold, but it does not ship a finished provider-specific webhook mapper because:
 
 - webhook payloads vary across providers
 - tenant resolution varies by product
 - some teams will map by `user_id`, others by `workspace_id`
 
-The dashboard app is ready. The missing project-specific piece is the webhook-to-database ingest layer.
+The dashboard app is ready. The remaining project-specific piece is adapting the webhook normalization logic for the adopter’s provider and tenancy model.
 
 ## Suggested Adopter Checklist
 
@@ -207,7 +224,7 @@ For each new adopter:
 4. Configure InsForge auth for that project.
 5. Add the app env vars locally and in deployment.
 6. Replace the logo and branding.
-7. Build a provider-specific edge function that writes to `call_events`.
+7. Deploy the included `call-webhook` scaffold and customize its normalization logic for the adopter’s provider.
 8. Send one or two test calls through the webhook.
 9. Confirm rows appear in `call_events`.
 10. Open the dashboard and verify the charts/reports populate.
@@ -394,6 +411,12 @@ Deploy an edge function after you add one:
 
 ```bash
 npx @insforge/cli functions deploy <your-function-slug>
+```
+
+Deploy the included webhook scaffold:
+
+```bash
+npx @insforge/cli functions deploy call-webhook
 ```
 
 ## Notes

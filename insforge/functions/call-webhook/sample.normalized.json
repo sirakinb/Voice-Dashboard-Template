@@ -1,0 +1,19 @@
+{
+  "secret": "replace-with-your-shared-secret",
+  "userId": "00000000-0000-0000-0000-000000000000",
+  "externalCallId": "call_123",
+  "createdTime": "2026-03-23T18:00:00Z",
+  "callerName": "Jane Smith",
+  "callerPhone": "+15551234567",
+  "category": "Leasing",
+  "status": "completed",
+  "durationSeconds": 214,
+  "couldAiAnswer": true,
+  "callbackRequested": false,
+  "afterHours": false,
+  "transcriptPreview": "Caller asked about availability and pricing.",
+  "callSummary": "The AI answered pricing questions and created a follow-up task.",
+  "metadata": {
+    "provider": "custom"
+  }
+}
